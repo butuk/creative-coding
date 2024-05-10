@@ -4,21 +4,27 @@ const settings = {
   dimensions: [ 1080, 1080 ]
 };
 
+function toRad(angle) {
+  return angle/180 * Math.PI;
+}
+
 const sketch = () => {
   return ({ context, width, height }) => {
-    const x = width * .35;
-    const y = height * .35;
-    const w = width * .3;
+    const w = width * .01;
     const h = width * .3;
+    const x = width * .5;
+    const y = height * .5;
+    const times = 12;
+    const angle = toRad(360/times);
 
-    context.fillStyle = 'red';
-    context.beginPath();
-    context.fillRect(x, y, w, h);
-
-    context.fillStyle = 'black';
-    context.fillRect(0, 0, width * .1, height * .1);
-
-
+    for (let i = 0; i < times; i++){
+      context.save();
+      context.fillStyle = 'red';
+      context.translate(x, y);
+      context.rotate(angle * i);
+      context.fillRect(0.5 * -w, 0.5 * -h, w, h);
+      context.restore();
+    }
   };
 };
 
