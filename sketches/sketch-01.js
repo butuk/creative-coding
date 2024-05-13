@@ -1,28 +1,39 @@
 const canvasSketch = require('canvas-sketch');
+const math = require('canvas-sketch-util/math');
+const random = require('canvas-sketch-util/random');
 
 const settings = {
   dimensions: [ 1080, 1080 ]
 };
 
-function toRad(angle) {
-  return angle/180 * Math.PI;
-}
-
 const sketch = () => {
   return ({ context, width, height }) => {
+    const radius = width * .2;
     const w = width * .01;
-    const h = width * .3;
-    const x = width * .5;
-    const y = height * .5;
-    const times = 12;
-    const angle = toRad(360/times);
+    const h = width * .05;
+    const circleCenterX = width * .5;
+    const circleCenterY = height * .5;
+    const segments = 12;
+    const angle = math.degToRad(360/segments);
+    let x,y;
 
-    for (let i = 0; i < times; i++){
+    for (let i = 0; i < segments; i++){
+      let segmentRotation = angle * i;
+
       context.save();
-      context.fillStyle = 'red';
+      context.fillStyle = 'black';
+
+      //The center of the overall circle
+      context.translate(circleCenterX, circleCenterY);
+
+      //The place of the particular rectangle in relation to the center
+      x = radius * Math.sin(segmentRotation);
+      y = radius * Math.cos(segmentRotation);
       context.translate(x, y);
-      context.rotate(angle * i);
-      context.fillRect(0.5 * -w, 0.5 * -h, w, h);
+      context.rotate(-segmentRotation);
+
+      //Particular rectangle
+      context.fillRect(-w * 0.5, -h * 0.5, w, h);
       context.restore();
     }
   };
