@@ -35,7 +35,13 @@ const sketch = () => {
       //Particular rectangle
       context.fillRect(-w * 0.5, -h * 0.5, w, h);
       context.restore();
+
+
     }
+    context.beginPath();
+    context.arc(circleCenterX, circleCenterY, radius, 0, 2 * Math.PI);
+    context.strokeStyle = 'black';
+    context.stroke();
   };
 };
 
