@@ -10,7 +10,7 @@ const sketch = () => {
   return ({ context, width, height }) => {
     const radius = width * .2;
     const w = width * .01;
-    const h = width * .05;
+    const h = width * .2;
     const circleCenterX = width * .5;
     const circleCenterY = height * .5;
     const segments = 12;
@@ -20,6 +20,7 @@ const sketch = () => {
     for (let i = 0; i < segments; i++){
       let segmentRotation = angle * i;
 
+      //Set of rectangles
       context.save();
       context.fillStyle = 'black';
 
@@ -31,17 +32,29 @@ const sketch = () => {
       y = radius * Math.cos(segmentRotation);
       context.translate(x, y);
       context.rotate(-segmentRotation);
+      context.scale(random.range(.2, 2), random.range(.2, .5));
 
       //Particular rectangle
-      context.fillRect(-w * 0.5, -h * 0.5, w, h);
+      context.beginPath();
+      context.fillRect(-w * .5, -h * random.range(0, .5), w, h);
+
+      //End of this figures set
       context.restore();
 
+      //New figures set
+      context.save();
+      context.translate(circleCenterX, circleCenterY);
+      context.rotate(-segmentRotation);
+      context.lineWidth = random.range(5, 20);
 
+      //Arcs
+      context.beginPath();
+      context.arc(0, 0, radius * random.range(.7, 1.5), angle * random.range(0, -.3), angle * random.range(0, 3));
+      context.stroke();
+
+      context.restore();
     }
-    context.beginPath();
-    context.arc(circleCenterX, circleCenterY, radius, 0, 2 * Math.PI);
-    context.strokeStyle = 'black';
-    context.stroke();
+
   };
 };
 
