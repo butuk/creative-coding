@@ -1,8 +1,14 @@
 const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
+const math = require('canvas-sketch-util/math');
 
-const amount = 40;
+const amount = 60;
 const pointRadius = 10;
+const radiusRange = {from: .5, to: 1.2};
+const directionRange = {from: -5, to: 5};
+const closestPoint = 200;
+const lineWidth = 4;
+const lineRange = {from: 6, to: .1};
 
 const settings = {
   dimensions: [ 1080, 1080 ],
@@ -10,7 +16,6 @@ const settings = {
 };
 
 const sketch = ({ context, width, height }) => {
-
 
   const points = [];
   for (let i=0; i<amount; i++) {
@@ -22,6 +27,24 @@ const sketch = ({ context, width, height }) => {
   return ({ context, width, height }) => {
     context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
+
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      for (let j = i + 1; j < points.length; j++) {
+        const another = points[j];
+
+        const dist = point.start.getDistance(another.start);
+
+        if (dist > closestPoint) continue;
+
+        context.lineWidth = math.mapRange(dist, 0, closestPoint, lineRange.from, lineRange.to);
+
+        context.beginPath();
+        context.moveTo(point.start.x, point.start.y);
+        context.lineTo(another.start.x, another.start.y);
+        context.stroke();
+      }
+    }
 
     points.forEach(point => {
       point.update();
@@ -38,13 +61,20 @@ class Vector {
     this.x = x;
     this.y = y;
   }
+
+  getDistance(point) {
+    const dx = this.x - point.x;
+    const dy = this.y - point.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 }
 
 class Point {
   constructor(x, y) {
     this.start = new Vector(x, y);
-    this.vector = new Vector(random.range(-1, 1), random.range(-1, 1));
-    this.radius = pointRadius * random.range(.5, 1.5);
+    this.vector = new Vector(random.range(directionRange.from, directionRange.to), random.range(directionRange.from, directionRange.to));
+    this.random = random.range(radiusRange.from, radiusRange.to);
+    this.radius = pointRadius * this.random;
   }
 
   update() {
@@ -63,7 +93,7 @@ class Point {
     context.beginPath();
     context.arc(0, 0, this.radius, 0, Math.PI * 2);
     context.fill();
-    context.lineWidth = 4;
+    context.lineWidth = lineWidth * this.random;
     context.stroke();
     context.restore();
   }
