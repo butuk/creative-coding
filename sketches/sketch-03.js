@@ -1,4 +1,5 @@
 const canvasSketch = require('canvas-sketch');
+const random = require('canvas-sketch-util/random');
 
 const settings = {
   dimensions: [ 1080, 1080 ]
@@ -10,8 +11,8 @@ const sketch = () => {
     context.fillRect(0, 0, width, height);
 
     const grid = {
-      columns: 4,
-      rows: 4,
+      columns: 10,
+      rows: 10,
     };
     const pic = {
       width: width * .8,
@@ -37,12 +38,17 @@ const sketch = () => {
         height: cell.height * .9,
       }
 
+      item.angle = (random.noise2D(item.x * 0.001, item.y * 0.001)) * Math.PI,
+
       context.save();
-      context.translate(item.x + pic.marginX, item.y + pic.marginY);
+      context.translate(pic.marginX, pic.marginY)
+      context.translate(item.x, item.y);
+      context.translate(item.width / 2, item.height / 2);
+      context.rotate(item.angle);
       context.beginPath();
-      console.log(item.width); //------------------
-      context.moveTo(0, item.height / 2);
-      context.lineTo(item.width, item.height / 2);
+      console.log(item.angle); //------------------
+      context.moveTo(0, 0);
+      context.lineTo(item.width, 0);
       context.lineWidth = 5;
       context.stroke();
       context.restore();
