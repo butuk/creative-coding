@@ -1,13 +1,13 @@
 const canvasSketch = require('canvas-sketch');
-
+let canvasManager;
+let text = 'R';
 const settings = {
   dimensions: [ 1080, 1080 ]
 };
 const font = {
-  size: '400px',
+  size: '1000px',
   family: 'serif'
 };
-const text = 'R';
 
 const sketch = () => {
   return ({ context, width, height }) => {
@@ -31,8 +31,7 @@ const sketch = () => {
       height: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent,
     }
 
-    console.log(metrics, img.y); //---------------------
-
+    //Rendering
     context.save();
     context.translate((width - img.width) * .5 - img.x, (height - img.height) * .5 - img.y);
     context.beginPath();
@@ -40,9 +39,18 @@ const sketch = () => {
     context.stroke();
     context.fillText(text, 0, 0);
     context.restore();
-
   };
-
 };
+const changeLetter = (event) => {
+  text = event.key.toUpperCase();
+  canvasManager.render();
+}
 
-canvasSketch(sketch, settings);
+document.addEventListener('keyup', changeLetter);
+
+const start = async () => {
+  canvasManager = await canvasSketch(sketch, settings);
+}
+start();
+
+
